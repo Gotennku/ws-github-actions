@@ -1,0 +1,27 @@
+name: chocolatine
+
+on:
+  push:
+    branches-ignore: [ga-ignore-*]
+  pull_request:
+    branches-ignore: [ga-ignore-*]
+
+jobs:
+  coding-style:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout GH repo
+        uses: actions/checkout@v4
+
+      - name: Run coding-style.sh
+        run: check.sh $<pwd> $<pwd>
+        
+      - name: Report banana result
+        run: |
+          NB_ERRORS=$(cat coding-style-reports.log | wc -l)
+          if [ $NB_ERRORS -gt 0 ]; then
+              ERROR=$(cat coding-style-reports.log)
+              echo "::error title=$NB_ERRORS errors found :: $ERROR"
+              exit 1
+          fi
+          exit 0
