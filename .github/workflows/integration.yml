@@ -18,6 +18,17 @@ jobs:
       - name: Run coding-style.sh
         run: check.sh $(pwd) $(pwd)
         
+      - name: Compile repository
+        run: make
+
+      - name: Check binary presence
+        run: |
+          if [ ! -f ./chocolatine ]; then
+              echo "::error title=Binary not found :: The binary chocolatine is not present in the repository"
+              exit 1
+          fi
+          exit 0
+    
       - name: Report banana result
         run: |
           NB_ERRORS=$(cat coding-style-reports.log | wc -l)
